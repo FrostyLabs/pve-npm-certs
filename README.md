@@ -67,9 +67,10 @@ Update these values:
 ### 4. Copy Files to Proxmox
 
 ```bash
-scp deploy-pve-cert.conf root@your-proxmox:/root/
-scp deploy-pve-cert.py root@your-proxmox:/root/
-scp verify-pve-cert.py root@your-proxmox:/root/
+ssh root@your-proxmox "mkdir -p /root/deploy-certs"
+scp deploy-pve-cert.conf root@your-proxmox:/root/deploy-certs/
+scp deploy-pve-cert.py root@your-proxmox:/root/deploy-certs/
+scp verify-pve-cert.py root@your-proxmox:/root/deploy-certs/
 ```
 
 ### 5. Setup SSH Keys
@@ -78,7 +79,7 @@ On Proxmox:
 
 ```bash
 # Make scripts executable
-chmod +x /root/deploy-pve-cert.py /root/verify-pve-cert.py
+chmod +x /root/deploy-certs/deploy-pve-cert.py /root/deploy-certs/verify-pve-cert.py
 
 # Generate SSH key
 ssh-keygen -t ed25519 -f /root/.ssh/synology_npm -N ""
@@ -93,7 +94,7 @@ ssh -i /root/.ssh/synology_npm user@npm-host hostname
 ### 6. Deploy Certificate
 
 ```bash
-python3 /root/deploy-pve-cert.py
+python3 /root/deploy-certs/deploy-pve-cert.py
 ```
 
 The script will:
@@ -106,7 +107,7 @@ The script will:
 ### 7. Verify
 
 ```bash
-python3 /root/verify-pve-cert.py
+python3 /root/deploy-certs/verify-pve-cert.py
 ```
 
 Access Proxmox at `https://your-domain:8006` - you should see a valid certificate.
@@ -116,14 +117,14 @@ Access Proxmox at `https://your-domain:8006` - you should see a valid certificat
 When NPM renews the certificate (every 60-90 days), run the deployment script again:
 
 ```bash
-python3 /root/deploy-pve-cert.py
+python3 /root/deploy-certs/deploy-pve-cert.py
 ```
 
 You can automate this with cron if desired:
 
 ```bash
 crontab -e
-# Add: 0 3 * * * /usr/bin/python3 /root/deploy-pve-cert.py >> /var/log/pve-cert-deploy.log 2>&1
+# Add: 0 3 * * * /usr/bin/python3 /root/deploy-certs/deploy-pve-cert.py >> /var/log/pve-cert-deploy.log 2>&1
 ```
 
 ## Troubleshooting
@@ -168,7 +169,3 @@ tail -f /var/log/pve-cert-deploy.log
 - Logs are written to `/var/log/pve-cert-deploy.log`
 - The script is idempotent - safe to run multiple times
 - Works with wildcard certificates if your domain matches
-
-## License
-
-MIT
