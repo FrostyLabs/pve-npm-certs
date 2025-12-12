@@ -1,0 +1,21 @@
+# Proxmox VE Certificate Deployment Configuration
+# Script location: /root/deploy-certs/
+
+# Synology/NPM Host
+SYNOLOGY_HOST=synology-dsm.local
+SYNOLOGY_USER=your-user
+SYNOLOGY_SSH_KEY=/root/.ssh/synology_npm
+
+# NPM Certificate Path
+NPM_CERT_PATH=/volume1/docker/nginx-proxy-manager/letsencrypt/live/npm-X
+
+# Proxmox Domain
+DOMAIN=pve.example.com
+
+# Proxmox Certificate Paths (don't change unless you know what you're doing)
+PVE_CERT_PATH=/etc/pve/local/pveproxy-ssl.pem
+PVE_KEY_PATH=/etc/pve/local/pveproxy-ssl.key
+
+# Backup and Logging
+BACKUP_DIR=/root/pve-cert-backups
+LOG_FILE=/var/log/pve-cert-deploy.log
